@@ -2,420 +2,289 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menuku Resep Masakan tiap hari</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0; padding: 0;
-            background: #f8f9fa;
+        @media (max-width: 640px) {
+            .recipe-card {
+                width: 100%;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #c05543;
-            color: #fff;
-            padding: 10px 30px;
+        
+        /* Custom scrollbar for recipe modal */
+        #recipeDetail::-webkit-scrollbar {
+            width: 8px;
         }
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-        .logo {
-            width: 40px; height: 40px;
-            margin-right: 15px;
-        }
-        .menu-title {
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        .header-right {
-            display: flex;
-            align-items: center;
-        }
-        .login-btn {
-            background: #fff;
-            color: #af4449;
-            border: none;
-            padding: 8px 16px;
-            font-size: 1em;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 15px;
-        }
-        .main {
-            max-width: 900px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 24px;
+        #recipeDetail::-webkit-scrollbar-track {
+            background: #f1f1f1;
             border-radius: 10px;
-            box-shadow: 0 2px 8px #00000014;
         }
-        .user-info {
-            margin: 10px 0 15px 0;
-            font-weight: bold;
-            color: #444;
+        #recipeDetail::-webkit-scrollbar-thumb {
+            background: #c05543;
+            border-radius: 10px;
         }
-        .search-bar {
-            display: flex;
-            margin-bottom: 20px;
+        #recipeDetail::-webkit-scrollbar-thumb:hover {
+            background: #a04433;
         }
-
-        input{
-            border-radius: 0.3rem;
-            border: 2px solid;
+        
+        /* Animation for modal */
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-20px);}
+            to {opacity: 1; transform: translateY(0);}
         }
-
-        .search-bar input {
-            flex: 1;
-            padding: 8px;
-            font-size: 1em;
-            border: 1px solid #ddd;
-            border-radius: 5px 0 0 5px;
-        }
-        .search-bar button {
-            padding: 8px 16px;
-            border: none;
-            background: #c06666;
-            color: #fff;
-            font-size: 1em;
-            border-radius: 0 5px 5px 0;
-            cursor: pointer;
-        }
-        .back-main-btn {
-            display: none;
-            margin-bottom: 15px;
-            background: #8b293e;
-            color: #fff;
-            padding: 8px 18px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        .recipes-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-        }
-        .recipe-card {
-            background: #fff8e1;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px #00000010;
-            padding: 16px;
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-        .recipe-card:hover {
-            box-shadow: 0 4px 16px #00000022;
-        }
-        .recipe-card img {
-            width: 100%;
-            border-radius: 6px;
-            height: 140px;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-        .recipe-title {
-            font-size: 1.1em;
-            margin-bottom: 5px;
-            color: #9b3c09;
-        }
-        .about-us {
-            background: #ffe0b2;
-            color: #574b22;
-            padding: 16px;
-            margin-top: 32px;
-            border-radius: 8px;
-        }
-        /* Modal Styles */
-        .modal {
-            display: flex;
-            align-items: center;       /* Vertically center */
-            justify-content: center;   /* Horizontally center */
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-        }
-
-
-        .modal-content{
-            font-size: larger;
-            width: 25   %;
-            padding: 15px;
-            background-color: white;
-            border-radius: 5px;
-        }
-
-        #loginForm{
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .close {
-            position: absolute;
-            right: 10px; top: 8px;
-            font-size: 1.3em;
-            color: #666;
-            cursor: pointer;
-        }
-        /* Recipe Detail Modal */
-        .recipe-modal-content img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 7px;
-            margin-bottom: 13px;
-        }
-        .recipe-modal-content h3 {
-            margin: 0 0 10px 0;
-        }
-        .recipe-modal-content ul {
-            margin: 0 0 12px 15px;
-        }
-        .back-btn {
-            display: inline-block;
-            margin-top: 10px;
-            background: #ad462c;
-            color: #fff;
-            padding: 8px 18px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        #recipeDetail {
-            overflow-y: auto;
-            max-height: 80%;
-        }
-
-        @media (max-width: 600px) {
-            .main {
-                padding: 10px;
-            }
-            .modal-content, .recipe-modal-content {
-                width: 95vw;
-            }
+        .modal-content {
+            animation: modalFadeIn 0.3s ease-out;
         }
     </style>
 </head>
-<body>
-    <div class="header">
-        <div class="header-left">
-            <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="Logo" class="logo">
-            <span class="menu-title">Menuku</span>
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-red-700 text-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="Logo" class="w-10 h-10">
+                <h1 class="text-xl font-bold">Menuku</h1>
+            </div>
+            <button onclick="showLoginModal()" class="bg-white text-red-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
+                <i class="fas fa-user mr-2"></i>Login
+            </button>
         </div>
-        <div class="header-right">
-            <button class="login-btn" onclick="showLoginModal()">Login</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- User Info -->
+        <div id="userInfo" class="hidden bg-green-100 border-l-4 border-green-500 text-green-700 p-3 mb-6 rounded">
+            <p class="font-medium"></p>
         </div>
-    </div>
-    <div class="main">
-        <div id="userInfo" class="user-info" style="display:none;"></div>
-    <form class="search-bar" onsubmit="searchRecipe(event)">
-        <input type="text" id="searchInput" placeholder="Cari resep masakan..." required>
-        <button type="submit">Cari</button>
-    </form>
 
-        <!-- TOMBOL BACK KE HALAMAN UTAMA -->
-        <button id="backMainBtn" class="back-main-btn" onclick="backToMain()">Kembali ke Halaman Utama</button>
-        <div id="recipesList" class="recipes-list"></div>
+        <!-- Search Bar -->
+        <form onsubmit="searchRecipe(event)" class="mb-6 flex">
+            <input type="text" id="searchInput" placeholder="Cari resep masakan..." 
+                   class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-r-lg hover:bg-red-700 transition">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
 
-        <div class="about-us" id="aboutUs">
-            <h4>About Us</h4>
-            <p>Hubungi kami untuk saran & kerjasama:</p>
-            <ul>
-                <li>WhatsApp: <a href="tel:+6281234567890">+62 812-3456-7890</a></li>
-                <li>Email: <a href="mailto:menuku@gmail.com">menuku@gmail.com</a></li>
+        <!-- Back Button -->
+        <button id="backMainBtn" onclick="backToMain()" class="hidden mb-6 bg-red-700 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition">
+            <i class="fas fa-arrow-left mr-2"></i>Kembali ke Halaman Utama
+        </button>
+
+        <!-- Recipes Grid -->
+        <div id="recipesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+        <!-- About Us -->
+        <div class="mt-10 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg">
+            <h4 class="font-bold text-lg mb-2">Tentang Kami</h4>
+            <p class="mb-2">Hubungi kami untuk saran & kerjasama:</p>
+            <ul class="space-y-1">
+                <li><i class="fas fa-phone-alt mr-2"></i>WhatsApp: <a href="tel:+6281234567890" class="text-red-600 hover:underline">+62 812-3456-7890</a></li>
+                <li><i class="fas fa-envelope mr-2"></i>Email: <a href="mailto:menuku@gmail.com" class="text-red-600 hover:underline">menuku@gmail.com</a></li>
             </ul>
         </div>
-    </div>
+    </main>
 
     <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="hideLoginModal()">&times;</span>
-            <h3>Login User</h3>
-            <form id="loginForm" onsubmit="loginUser(event)">
-                <label for="email">Email:</label>
-                <input type="email" id="email" required/>
-                <label for="username">Nama:</label>
-                <input type="text" id="username" required/>
-                <button type="submit" style="margin-top:10px;background:#ff9800;color:#fff;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;">Login</button>
-            </form>
+    <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md relative">
+            <span onclick="hideLoginModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 cursor-pointer text-2xl">&times;</span>
+            <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Login User</h3>
+                <form id="loginForm" onsubmit="loginUser(event)" class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-gray-700 mb-1">Email:</label>
+                        <input type="email" id="email" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <div>
+                        <label for="username" class="block text-gray-700 mb-1">Nama:</label>
+                        <input type="text" id="username" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500">
+                    </div>
+                    <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Recipe Detail Modal -->
-    <div id="recipeModal" class="modal">
-        <div class="modal-content recipe-modal-content" id="recipeDetail"></div>
+    <div id="recipeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div id="recipeDetail" class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <span onclick="hideRecipeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 cursor-pointer text-2xl">&times;</span>
+            <div class="p-6">
+                <!-- Content will be inserted here by JavaScript -->
+            </div>
+        </div>
     </div>
 
     <script>
         // 10 Resep Nusantara
         const recipes = [
-{
-    title: "Nasi Goreng Teri Pete",
-    image: "nasigorengteripete.jpg",
-    ingredients: [
-        "2 piring nasi putih (gunakan nasi yang sudah dingin agar tidak lembek)",
-        "2 sdm teri medan, goreng hingga garing",
-        "1 papan pete, kupas dan belah dua",
-        "2 butir telur ayam (optional, bisa diorak-arik)",
-        "3 siung bawang putih",
-        "5 siung bawang merah",
-        "5 buah cabai rawit merah (bisa disesuaikan)",
-        "2 buah cabai merah besar",
-        "2 sdm kecap manis",
-        "1 sdt saus tiram",
-        "Garam secukupnya",
-        "Kaldu bubuk secukupnya",
-        "Minyak goreng secukupnya untuk menumis"
-    ],
-    steps: [
-        "Panaskan sekitar 2 sdm minyak di wajan, lalu goreng teri medan hingga kering dan garing. Angkat dan tiriskan.",
-        "Dengan minyak yang sama atau tambahkan sedikit, tumis pete hingga layu dan harum. Angkat dan sisihkan.",
-        "Haluskan bawang putih, bawang merah, cabai rawit, dan cabai merah besar.",
-        "Tumis bumbu halus dengan sedikit minyak hingga harum dan warnanya mulai kecoklatan.",
-        "Jika menggunakan telur, dorong bumbu ke sisi wajan, lalu tuang telur dan orak-arik hingga matang.",
-        "Masukkan nasi putih ke dalam wajan, aduk rata bersama bumbu dan telur orak-arik.",
-        "Tambahkan kecap manis, saus tiram, garam, dan kaldu bubuk. Aduk hingga semua tercampur rata.",
-        "Masukkan pete dan teri goreng, lalu aduk kembali hingga semua bahan tercampur merata.",
-        "Cicipi dan sesuaikan rasa. Angkat jika nasi sudah terasa gurih, wangi, dan sedikit kering.",
-        "Sajikan hangat, bisa dilengkapi dengan kerupuk, acar, atau potongan mentimun segar."
-    ]
-},
-
-           {
-    title: "Telur Balado",
-    image: "telorbalado.jpg", 
-    ingredients: [
-        "6 butir telur ayam, rebus dan kupas",
-        "5 buah cabai merah besar",
-        "10 buah cabai rawit merah (sesuai selera)",
-        "6 siung bawang merah",
-        "3 siung bawang putih",
-        "2 lembar daun jeruk",
-        "1 buah tomat merah",
-        "1 sdt gula pasir",
-        "Garam secukupnya",
-        "Kaldu bubuk secukupnya",
-        "Minyak goreng untuk menggoreng dan menumis"
-    ],
-    steps: [
-        "Goreng telur rebus hingga bagian luarnya agak kering dan berkulit. Angkat dan sisihkan.",
-        "Haluskan cabai merah besar, cabai rawit, bawang merah, bawang putih, dan tomat.",
-        "Panaskan minyak secukupnya, tumis bumbu halus bersama daun jeruk hingga matang, harum, dan warnanya agak gelap.",
-        "Tambahkan garam, gula, dan kaldu bubuk. Aduk rata dan koreksi rasa.",
-        "Masukkan telur yang sudah digoreng, aduk rata hingga bumbu menempel dan meresap.",
-        "Masak dengan api kecil selama beberapa menit agar bumbu semakin meresap.",
-        "Sajikan telur balado hangat bersama nasi putih dan pelengkap lainnya."
-    ]
-
-            },
             {
-                title: "telor ceplok saus pedas",
-                image: "telorceplok.jpg",
+                title: "Nasi Goreng Teri Pete",
+                image: "nasigorengteripete.jpg",
                 ingredients: [
-                       "4 butir telur ayam",
-                        "3 siung bawang putih, cincang halus",
-                        "4 siung bawang merah, iris tipis",
-                        "3 buah cabai merah keriting, iris serong",
-                        "5 buah cabai rawit merah (sesuai selera)",
-                        "2 sdm saus sambal",
-                        "1 sdm saus tomat",
-                        "1 sdm kecap manis (opsional)",
-                        "½ sdt garam",
-                        "½ sdt gula pasir",
-                        "¼ sdt kaldu bubuk",
-                        "100 ml air",
-                        "Minyak goreng secukupnya untuk menggoreng dan menumis"
-                ],
-                steps: [ 
-                "Panaskan minyak, ceplok telur satu per satu hingga matang sesuai selera. Angkat dan tiriskan.",
-                "Panaskan sedikit minyak, tumis bawang merah dan bawang putih hingga harum dan kecokelatan.",
-                 "Masukkan cabai merah dan cabai rawit, tumis hingga layu.",
-                 "Tambahkan saus sambal, saus tomat, dan kecap manis. Aduk rata.",
-                 "Tuang air, lalu bumbui dengan garam, gula, dan kaldu bubuk. Aduk dan masak hingga mendidih dan agak mengental.",
-                 "Masukkan telur ceplok ke dalam saus, aduk perlahan agar telur tetap utuh.",
-                 "Masak sebentar hingga bumbu meresap ke dalam telur.",
-                 "Angkat dan sajikan telur ceplok saus pedas bersama nasi hangat."]
-            },
-            {
-  "title": "Rawon",
-  "image": "rawon.jpg",
-  "ingredients": [
-    "500 gram daging sapi (bagian sandung lamur atau daging iga), potong dadu",
-    "2 liter air",
-    "5 butir keluak (kluwak), ambil isinya, rendam air hangat",
-    "6 siung bawang merah",
-    "4 siung bawang putih",
-    "3 buah cabai merah keriting",
-    "2 cm lengkuas, memarkan",
-    "2 batang serai, memarkan",
-    "3 lembar daun jeruk",
-    "2 lembar daun salam",
-    "1 sendok makan gula merah, serut",
-    "1 sendok teh garam",
-    "Minyak untuk menumis"
-  ],
-  "steps": [
-    "Rebus daging sapi dalam air mendidih hingga empuk. Proses ini menghasilkan kaldu yang kaya rasa sebagai dasar kuah rawon. Setelah daging empuk, keluarkan daging dan saring kaldu supaya bening dan bebas kotoran.",
-    "Haluskan bawang merah, bawang putih, cabai merah, dan isi keluak sampai benar-benar lembut. Keluak ini penting untuk memberikan warna hitam pekat dan rasa khas pada kuah.",
-    "Tumis bumbu halus bersama lengkuas, serai, daun jeruk, dan daun salam hingga harum. Proses menumis ini mengeluarkan aroma rempah yang memperkaya cita rasa kuah.",
-    "Masukkan tumisan bumbu ke dalam kaldu, lalu didihkan kembali. Dengan cara ini, rasa bumbu dan rempah meresap sempurna ke dalam kuah.",
-    "Tambahkan potongan daging sapi, gula merah, dan garam ke dalam kuah. Masak dengan api kecil agar bumbu meresap ke daging dan kuah sedikit mengental, menghasilkan rasa yang kaya dan seimbang.",
-    "Sajikan rawon dengan nasi putih, tauge pendek, irisan daun bawang, kerupuk, dan sambal sebagai pelengkap."
-  ]
-
-            },
-          {
-  "title": "Ayam goreng Ketumbar",
-  "image": "ayamketumbar.jpg",
-  "ingredients": [
-    "1 ekor ayam, potong menjadi 8 bagian",
-    "6 siung bawang putih",
-    "4 siung bawang merah",
-    "1 sdm ketumbar bubuk",
-    "1 ruas jahe",
-    "1 ruas kunyit",
-    "2 lembar daun salam",
-    "1 batang serai, memarkan",
-    "1 sdt garam",
-    "1 sdt gula pasir",
-    "Air secukupnya",
-    "Minyak goreng secukupnya"
-  ],
-  "steps": [
-    "Haluskan bawang putih, bawang merah, jahe, kunyit, dan ketumbar hingga lembut.",
-    "Tumis bumbu halus bersama daun salam dan serai hingga harum dan matang.",
-    "Masukkan potongan ayam ke dalam tumisan, aduk hingga ayam berubah warna dan bumbu meresap.",
-    "Tambahkan air secukupnya, beri garam dan gula. Masak hingga ayam empuk dan air menyusut.",
-    "Angkat ayam, tiriskan, dan goreng hingga kecokelatan jika diinginkan.",
-    "Sajikan ayam ketumbar dengan nasi putih dan sambal sesuai selera."
-  ]
-
-            },
-            {
-                title: "sate ayam",
-                image: "satejpg.jpg",
-                ingredients: [
-                   "500 gram daging ayam fillet, potong dadu kecil",
-                   "20 tusuk sate, rendam air",
-                   "3 siung bawang putih, haluskan",
-                   "2 cm jahe, haluskan",
-                   "1 sdt ketumbar bubuk",
-                   "1 sdt garam",
-                   "1 sdm kecap manis",
-                   "1 sdm minyak goreng",
-                   "1 sdm air jeruk nipis"
+                    "2 piring nasi putih (gunakan nasi yang sudah dingin agar tidak lembek)",
+                    "2 sdm teri medan, goreng hingga garing",
+                    "1 papan pete, kupas dan belah dua",
+                    "2 butir telur ayam (optional, bisa diorak-arik)",
+                    "3 siung bawang putih",
+                    "5 siung bawang merah",
+                    "5 buah cabai rawit merah (bisa disesuaikan)",
+                    "2 buah cabai merah besar",
+                    "2 sdm kecap manis",
+                    "1 sdt saus tiram",
+                    "Garam secukupnya",
+                    "Kaldu bubuk secukupnya",
+                    "Minyak goreng secukupnya untuk menumis"
                 ],
                 steps: [
-                   "Campur potongan ayam dengan bawang putih, jahe, ketumbar, garam, kecap manis, minyak goreng, dan air jeruk nipis. Aduk rata dan diamkan selama minimal 1 jam.",
+                    "Panaskan sekitar 2 sdm minyak di wajan, lalu goreng teri medan hingga kering dan garing. Angkat dan tiriskan.",
+                    "Dengan minyak yang sama atau tambahkan sedikit, tumis pete hingga layu dan harum. Angkat dan sisihkan.",
+                    "Haluskan bawang putih, bawang merah, cabai rawit, dan cabai merah besar.",
+                    "Tumis bumbu halus dengan sedikit minyak hingga harum dan warnanya mulai kecoklatan.",
+                    "Jika menggunakan telur, dorong bumbu ke sisi wajan, lalu tuang telur dan orak-arik hingga matang.",
+                    "Masukkan nasi putih ke dalam wajan, aduk rata bersama bumbu dan telur orak-arik.",
+                    "Tambahkan kecap manis, saus tiram, garam, dan kaldu bubuk. Aduk hingga semua tercampur rata.",
+                    "Masukkan pete dan teri goreng, lalu aduk kembali hingga semua bahan tercampur merata.",
+                    "Cicipi dan sesuaikan rasa. Angkat jika nasi sudah terasa gurih, wangi, dan sedikit kering.",
+                    "Sajikan hangat, bisa dilengkapi dengan kerupuk, acar, atau potongan mentimun segar."
+                ]
+            },
+            {
+                title: "Telur Balado",
+                image: "telorbalado.jpg", 
+                ingredients: [
+                    "6 butir telur ayam, rebus dan kupas",
+                    "5 buah cabai merah besar",
+                    "10 buah cabai rawit merah (sesuai selera)",
+                    "6 siung bawang merah",
+                    "3 siung bawang putih",
+                    "2 lembar daun jeruk",
+                    "1 buah tomat merah",
+                    "1 sdt gula pasir",
+                    "Garam secukupnya",
+                    "Kaldu bubuk secukupnya",
+                    "Minyak goreng untuk menggoreng dan menumis"
+                ],
+                steps: [
+                    "Goreng telur rebus hingga bagian luarnya agak kering dan berkulit. Angkat dan sisihkan.",
+                    "Haluskan cabai merah besar, cabai rawit, bawang merah, bawang putih, dan tomat.",
+                    "Panaskan minyak secukupnya, tumis bumbu halus bersama daun jeruk hingga matang, harum, dan warnanya agak gelap.",
+                    "Tambahkan garam, gula, dan kaldu bubuk. Aduk rata dan koreksi rasa.",
+                    "Masukkan telur yang sudah digoreng, aduk rata hingga bumbu menempel dan meresap.",
+                    "Masak dengan api kecil selama beberapa menit agar bumbu semakin meresap.",
+                    "Sajikan telur balado hangat bersama nasi putih dan pelengkap lainnya."
+                ]
+            },
+            {
+                title: "Telur Ceplok Saus Pedas",
+                image: "telorceplok.jpg",
+                ingredients: [
+                    "4 butir telur ayam",
+                    "3 siung bawang putih, cincang halus",
+                    "4 siung bawang merah, iris tipis",
+                    "3 buah cabai merah keriting, iris serong",
+                    "5 buah cabai rawit merah (sesuai selera)",
+                    "2 sdm saus sambal",
+                    "1 sdm saus tomat",
+                    "1 sdm kecap manis (opsional)",
+                    "½ sdt garam",
+                    "½ sdt gula pasir",
+                    "¼ sdt kaldu bubuk",
+                    "100 ml air",
+                    "Minyak goreng secukupnya untuk menggoreng dan menumis"
+                ],
+                steps: [ 
+                    "Panaskan minyak, ceplok telur satu per satu hingga matang sesuai selera. Angkat dan tiriskan.",
+                    "Panaskan sedikit minyak, tumis bawang merah dan bawang putih hingga harum dan kecokelatan.",
+                    "Masukkan cabai merah dan cabai rawit, tumis hingga layu.",
+                    "Tambahkan saus sambal, saus tomat, dan kecap manis. Aduk rata.",
+                    "Tuang air, lalu bumbui dengan garam, gula, dan kaldu bubuk. Aduk dan masak hingga mendidih dan agak mengental.",
+                    "Masukkan telur ceplok ke dalam saus, aduk perlahan agar telur tetap utuh.",
+                    "Masak sebentar hingga bumbu meresap ke dalam telur.",
+                    "Angkat dan sajikan telur ceplok saus pedas bersama nasi hangat."
+                ]
+            },
+            {
+                title: "Rawon",
+                image: "rawon.jpg",
+                ingredients: [
+                    "500 gram daging sapi (bagian sandung lamur atau daging iga), potong dadu",
+                    "2 liter air",
+                    "5 butir keluak (kluwak), ambil isinya, rendam air hangat",
+                    "6 siung bawang merah",
+                    "4 siung bawang putih",
+                    "3 buah cabai merah keriting",
+                    "2 cm lengkuas, memarkan",
+                    "2 batang serai, memarkan",
+                    "3 lembar daun jeruk",
+                    "2 lembar daun salam",
+                    "1 sendok makan gula merah, serut",
+                    "1 sendok teh garam",
+                    "Minyak untuk menumis"
+                ],
+                steps: [
+                    "Rebus daging sapi dalam air mendidih hingga empuk. Proses ini menghasilkan kaldu yang kaya rasa sebagai dasar kuah rawon. Setelah daging empuk, keluarkan daging dan saring kaldu supaya bening dan bebas kotoran.",
+                    "Haluskan bawang merah, bawang putih, cabai merah, dan isi keluak sampai benar-benar lembut. Keluak ini penting untuk memberikan warna hitam pekat dan rasa khas pada kuah.",
+                    "Tumis bumbu halus bersama lengkuas, serai, daun jeruk, dan daun salam hingga harum. Proses menumis ini mengeluarkan aroma rempah yang memperkaya cita rasa kuah.",
+                    "Masukkan tumisan bumbu ke dalam kaldu, lalu didihkan kembali. Dengan cara ini, rasa bumbu dan rempah meresap sempurna ke dalam kuah.",
+                    "Tambahkan potongan daging sapi, gula merah, dan garam ke dalam kuah. Masak dengan api kecil agar bumbu meresap ke daging dan kuah sedikit mengental, menghasilkan rasa yang kaya dan seimbang.",
+                    "Sajikan rawon dengan nasi putih, tauge pendek, irisan daun bawang, kerupuk, dan sambal sebagai pelengkap."
+                ]
+            },
+            {
+                title: "Ayam Goreng Ketumbar",
+                image: "ayamketumbar.jpg",
+                ingredients: [
+                    "1 ekor ayam, potong menjadi 8 bagian",
+                    "6 siung bawang putih",
+                    "4 siung bawang merah",
+                    "1 sdm ketumbar bubuk",
+                    "1 ruas jahe",
+                    "1 ruas kunyit",
+                    "2 lembar daun salam",
+                    "1 batang serai, memarkan",
+                    "1 sdt garam",
+                    "1 sdt gula pasir",
+                    "Air secukupnya",
+                    "Minyak goreng secukupnya"
+                ],
+                steps: [
+                    "Haluskan bawang putih, bawang merah, jahe, kunyit, dan ketumbar hingga lembut.",
+                    "Tumis bumbu halus bersama daun salam dan serai hingga harum dan matang.",
+                    "Masukkan potongan ayam ke dalam tumisan, aduk hingga ayam berubah warna dan bumbu meresap.",
+                    "Tambahkan air secukupnya, beri garam dan gula. Masak hingga ayam empuk dan air menyusut.",
+                    "Angkat ayam, tiriskan, dan goreng hingga kecokelatan jika diinginkan.",
+                    "Sajikan ayam ketumbar dengan nasi putih dan sambal sesuai selera."
+                ]
+            },
+            {
+                title: "Sate Ayam",
+                image: "satejpg.jpg",
+                ingredients: [
+                    "500 gram daging ayam fillet, potong dadu kecil",
+                    "20 tusuk sate, rendam air",
+                    "3 siung bawang putih, haluskan",
+                    "2 cm jahe, haluskan",
+                    "1 sdt ketumbar bubuk",
+                    "1 sdt garam",
+                    "1 sdm kecap manis",
+                    "1 sdm minyak goreng",
+                    "1 sdm air jeruk nipis"
+                ],
+                steps: [
+                    "Campur potongan ayam dengan bawang putih, jahe, ketumbar, garam, kecap manis, minyak goreng, dan air jeruk nipis. Aduk rata dan diamkan selama minimal 1 jam.",
                     "Tusukkan potongan ayam yang sudah dimarinasi ke tusuk sate.",
                     "Panggang sate di atas bara api atau grill pan sambil diolesi sisa bumbu marinasi agar tidak kering, balik sesekali hingga matang dan kecokelatan.",
                     "Untuk saus kacang: tumis bawang putih dan cabai hingga harum, masukkan kacang tanah halus, kecap manis, gula merah, garam, dan air. Masak sambil diaduk sampai saus mengental.",
@@ -423,51 +292,50 @@
                 ]
             },
             {
-                title: "Sate taichan",
+                title: "Sate Taichan",
                 image: "taichan.jpg",
                 ingredients: [
-                     "500 gram daging ayam fillet, potong dadu kecil",
-                     "20 tusuk sate, rendam air agar tidak mudah gosong",
-                     "4 siung bawang putih, haluskan",
-                     "1 sdt garam",
-                     "1 sdt merica bubuk",
-                     "1 buah jeruk nipis, ambil airnya",
-                     "Bawang merah, iris tipis (untuk pelengkap)"
+                    "500 gram daging ayam fillet, potong dadu kecil",
+                    "20 tusuk sate, rendam air agar tidak mudah gosong",
+                    "4 siung bawang putih, haluskan",
+                    "1 sdt garam",
+                    "1 sdt merica bubuk",
+                    "1 buah jeruk nipis, ambil airnya",
+                    "Bawang merah, iris tipis (untuk pelengkap)"
                 ],
                 steps: [
-                 "Campur potongan ayam dengan bawang putih halus, garam, merica bubuk, dan air jeruk nipis. Aduk rata dan diamkan selama minimal 30 menit agar bumbu meresap.",
-                 "Tusukkan potongan ayam ke tusuk sate.",
-                 "Panaskan panggangan atau grill pan, panggang sate tanpa menggunakan minyak atau bumbu tambahan. Balik sate secara berkala hingga matang merata dan bagian luar agak gosong (sekitar 10-15 menit).",
-                 "Siapkan sambal jeruk nipis: haluskan cabai rawit (sesuai selera pedas), campur dengan garam dan air jeruk nipis secukupnya.",
-                 "Sajikan sate taichan dengan sambal jeruk nipis pedas dan taburan irisan bawang merah mentah."
+                    "Campur potongan ayam dengan bawang putih halus, garam, merica bubuk, dan air jeruk nipis. Aduk rata dan diamkan selama minimal 30 menit agar bumbu meresap.",
+                    "Tusukkan potongan ayam ke tusuk sate.",
+                    "Panaskan panggangan atau grill pan, panggang sate tanpa menggunakan minyak atau bumbu tambahan. Balik sate secara berkala hingga matang merata dan bagian luar agak gosong (sekitar 10-15 menit).",
+                    "Siapkan sambal jeruk nipis: haluskan cabai rawit (sesuai selera pedas), campur dengan garam dan air jeruk nipis secukupnya.",
+                    "Sajikan sate taichan dengan sambal jeruk nipis pedas dan taburan irisan bawang merah mentah."
                 ]
             },
             {
-                title: "Ayam saus telur asin",
+                title: "Ayam Saus Telur Asin",
                 image: "telurasin.jpg",
                 ingredients: [
-                   "500 gram dada ayam fillet, potong dadu",
-                   "100 gram tepung maizena",
-                   "1/2 sdt garam",
-                   "1/2 sdt merica",
-                   "Minyak goreng secukupnya",
-                   "4 butir kuning telur asin matang (rebus atau kukus), haluskan",
-                   "3 siung bawang putih, cincang halus",   
-                   "5 lembar daun kari (jika ada)",
-                   "2 sdm margarin",
-                   "100 ml susu cair",
-                   "1/2 sdt gula pasir",
-                   "Sejumput garam (secukupnya)"
+                    "500 gram dada ayam fillet, potong dadu",
+                    "100 gram tepung maizena",
+                    "1/2 sdt garam",
+                    "1/2 sdt merica",
+                    "Minyak goreng secukupnya",
+                    "4 butir kuning telur asin matang (rebus atau kukus), haluskan",
+                    "3 siung bawang putih, cincang halus",   
+                    "5 lembar daun kari (jika ada)",
+                    "2 sdm margarin",
+                    "100 ml susu cair",
+                    "1/2 sdt gula pasir",
+                    "Sejumput garam (secukupnya)"
                 ],
                 steps: [
-                      "Lumuri potongan ayam dengan garam dan merica, lalu balur dengan tepung maizena secara merata.",
-                      "Goreng ayam dalam minyak panas hingga kecokelatan dan renyah. Tiriskan.",
-                      "Lelehkan margarin di wajan, tumis bawang putih hingga harum dan masukkan daun kari (jika pakai).",
-                      "Masukkan kuning telur asin yang telah dihaluskan, aduk hingga berbusa.",
-                      "Tuang susu cair sedikit demi sedikit sambil diaduk, masukkan gula dan garam. Masak hingga saus mengental.",
-                      "Masukkan ayam goreng ke dalam saus, aduk rata hingga ayam terbalut saus telur asin.",
-                      "Sajikan ayam saus telur asin selagi hangat, bisa dengan nasi putih atau sebagai lauk."
-
+                    "Lumuri potongan ayam dengan garam dan merica, lalu balur dengan tepung maizena secara merata.",
+                    "Goreng ayam dalam minyak panas hingga kecokelatan dan renyah. Tiriskan.",
+                    "Lelehkan margarin di wajan, tumis bawang putih hingga harum dan masukkan daun kari (jika pakai).",
+                    "Masukkan kuning telur asin yang telah dihaluskan, aduk hingga berbusa.",
+                    "Tuang susu cair sedikit demi sedikit sambil diaduk, masukkan gula dan garam. Masak hingga saus mengental.",
+                    "Masukkan ayam goreng ke dalam saus, aduk rata hingga ayam terbalut saus telur asin.",
+                    "Sajikan ayam saus telur asin selagi hangat, bisa dengan nasi putih atau sebagai lauk."
                 ]
             },
             {
@@ -490,112 +358,126 @@
                     "200 ml air kaldu bekas rebusan bumbu (disaring)"
                 ],
                 steps: [
-                      "Lumuri lele dengan air jeruk nipis dan garam, diamkan selama 15 menit lalu bilas.",
-                      "Haluskan bawang putih, kemiri, kunyit, ketumbar, dan garam, lalu tumis hingga harum.",
-                      "Tambahkan air dan masukkan lele ke dalam bumbu, rebus hingga bumbu meresap dan lele setengah matang. Angkat dan tiriskan (simpan air rebusan untuk kremesan).",
-                      "Panaskan minyak, goreng lele hingga kering dan kecokelatan, angkat dan tiriskan.",
-                      "Untuk kremesan: campur tepung tapioka, tepung beras, kuning telur, dan air kaldu bumbu yang disaring. Aduk hingga rata dan encer.",
-                      "Panaskan minyak banyak, tuang adonan kremesan dengan jarak agak tinggi menggunakan sendok sayur, biarkan hingga mengeras dan kering, lalu angkat dan tiriskan.",
-                      "Sajikan lele goreng dengan kremesan di atasnya dan pelengkap seperti sambal serta lalapan."
+                    "Lumuri lele dengan air jeruk nipis dan garam, diamkan selama 15 menit lalu bilas.",
+                    "Haluskan bawang putih, kemiri, kunyit, ketumbar, dan garam, lalu tumis hingga harum.",
+                    "Tambahkan air dan masukkan lele ke dalam bumbu, rebus hingga bumbu meresap dan lele setengah matang. Angkat dan tiriskan (simpan air rebusan untuk kremesan).",
+                    "Panaskan minyak, goreng lele hingga kering dan kecokelatan, angkat dan tiriskan.",
+                    "Untuk kremesan: campur tepung tapioka, tepung beras, kuning telur, dan air kaldu bumbu yang disaring. Aduk hingga rata dan encer.",
+                    "Panaskan minyak banyak, tuang adonan kremesan dengan jarak agak tinggi menggunakan sendok sayur, biarkan hingga mengeras dan kering, lalu angkat dan tiriskan.",
+                    "Sajikan lele goreng dengan kremesan di atasnya dan pelengkap seperti sambal serta lalapan."
                 ]
             },
             {
                 title: "Lele Bakar",
                 image: "lelebakar.jpg",
                 ingredients: [
-                "4 ekor ikan lele, bersihkan",
-                "2 sdm air jeruk nipis",
-                "1 sdt garam",
-                "5 siung bawang putih",
-                "6 siung bawang merah",
-                "3 butir kemiri",
-                "2 cm jahe",
-                "2 cm kunyit",
-                "1 sdt ketumbar bubuk",
-                "1/2 sdt merica",
-                "2 sdm kecap manis",
-                "1 sdt garam",
-                "1 sdt gula merah",
-                "3 sdm minyak untuk menumis",
-                "2 sdm margarin",
-                "2 sdm kecap manis (untuk olesan)"
+                    "4 ekor ikan lele, bersihkan",
+                    "2 sdm air jeruk nipis",
+                    "1 sdt garam",
+                    "5 siung bawang putih",
+                    "6 siung bawang merah",
+                    "3 butir kemiri",
+                    "2 cm jahe",
+                    "2 cm kunyit",
+                    "1 sdt ketumbar bubuk",
+                    "1/2 sdt merica",
+                    "2 sdm kecap manis",
+                    "1 sdt garam",
+                    "1 sdt gula merah",
+                    "3 sdm minyak untuk menumis",
+                    "2 sdm margarin",
+                    "2 sdm kecap manis (untuk olesan)"
                 ],
                 steps: [
-                     "Lumuri ikan lele dengan air jeruk nipis dan garam, diamkan selama 15 menit, lalu bilas bersih.",
-                     "Haluskan bawang putih, bawang merah, kemiri, jahe, kunyit, ketumbar, merica, garam, dan gula merah.",
-                     "Tumis bumbu halus dengan minyak hingga harum, lalu tambahkan kecap manis. Aduk rata dan angkat.",
-                     "Lumuri ikan lele dengan bumbu tumis, diamkan selama 30 menit agar bumbu meresap.",
-                     "Panaskan panggangan atau grill pan, lelehkan margarin dan campur dengan kecap manis.",
-                     "Bakar lele sambil sesekali diolesi margarin kecap, balik hingga kedua sisi matang dan permukaan agak gosong.",
-                     "Sajikan lele bakar dengan sambal dan lalapan sesuai selera."
+                    "Lumuri ikan lele dengan air jeruk nipis dan garam, diamkan selama 15 menit, lalu bilas bersih.",
+                    "Haluskan bawang putih, bawang merah, kemiri, jahe, kunyit, ketumbar, merica, garam, dan gula merah.",
+                    "Tumis bumbu halus dengan minyak hingga harum, lalu tambahkan kecap manis. Aduk rata dan angkat.",
+                    "Lumuri ikan lele dengan bumbu tumis, diamkan selama 30 menit agar bumbu meresap.",
+                    "Panaskan panggangan atau grill pan, lelehkan margarin dan campur dengan kecap manis.",
+                    "Bakar lele sambil sesekali diolesi margarin kecap, balik hingga kedua sisi matang dan permukaan agak gosong.",
+                    "Sajikan lele bakar dengan sambal dan lalapan sesuai selera."
                 ]
             },
-             {
+            {
                 title: "Cah Kangkung",
                 image: "kangkung.jpg",
                 ingredients: [
-                 "1 ikat kangkung segar, siangi dan cuci bersih",
-                 "3 siung bawang putih, cincang halus",
-                 "2 siung bawang merah, cincang halus",
-                 "2 buah cabai merah keriting, iris tipis (optional)",
-                 "1 sdm saus tiram",
-                 "1 sdt kecap ikan atau kecap asin",
-                 "Garam secukupnya",
-                 "Merica bubuk secukupnya",
-                 "Minyak goreng untuk menumis",
-                 "50 ml air"
+                    "1 ikat kangkung segar, siangi dan cuci bersih",
+                    "3 siung bawang putih, cincang halus",
+                    "2 siung bawang merah, cincang halus",
+                    "2 buah cabai merah keriting, iris tipis (optional)",
+                    "1 sdm saus tiram",
+                    "1 sdt kecap ikan atau kecap asin",
+                    "Garam secukupnya",
+                    "Merica bubuk secukupnya",
+                    "Minyak goreng untuk menumis",
+                    "50 ml air"
                 ],
                 steps: [
-                   "Panaskan minyak goreng di wajan, tumis bawang putih dan bawang merah hingga harum dan agak kekuningan.",
-                   "Masukkan irisan cabai merah, tumis sebentar hingga layu.",
-                   "Tambahkan kangkung, aduk cepat dan rata.",
-                   "Tuang saus tiram, kecap ikan, garam, dan merica bubuk. Aduk rata.",
-                   "Tambahkan air sedikit saja, tumis hingga kangkung layu dan matang sekitar 2-3 menit.",
-                   "Cicipi dan koreksi rasa, angkat dan sajikan selagi hangat."
+                    "Panaskan minyak goreng di wajan, tumis bawang putih dan bawang merah hingga harum dan agak kekuningan.",
+                    "Masukkan irisan cabai merah, tumis sebentar hingga layu.",
+                    "Tambahkan kangkung, aduk cepat dan rata.",
+                    "Tuang saus tiram, kecap ikan, garam, dan merica bubuk. Aduk rata.",
+                    "Tambahkan air sedikit saja, tumis hingga kangkung layu dan matang sekitar 2-3 menit.",
+                    "Cicipi dan koreksi rasa, angkat dan sajikan selagi hangat."
                 ]
             },
-             {
+            {
                 title: "Ayam Kecap",
                 image: "kecap.jpg",
                 ingredients: [
-                "1 ekor ayam, potong menjadi beberapa bagian",
-                "4 siung bawang putih, cincang halus",
-                "6 siung bawang merah, cincang halus",
-                "2 buah cabai merah, iris serong (optional)",
-                "3 sdm kecap manis",
-                "1 sdm saus tiram",
-                "1 sdt merica bubuk",
-                "1 sdt garam",
-                "2 sdm minyak goreng",
-                "100 ml air",
-                "1 batang daun bawang, iris tipis"
+                    "1 ekor ayam, potong menjadi beberapa bagian",
+                    "4 siung bawang putih, cincang halus",
+                    "6 siung bawang merah, cincang halus",
+                    "2 buah cabai merah, iris serong (optional)",
+                    "3 sdm kecap manis",
+                    "1 sdm saus tiram",
+                    "1 sdt merica bubuk",
+                    "1 sdt garam",
+                    "2 sdm minyak goreng",
+                    "100 ml air",
+                    "1 batang daun bawang, iris tipis"
                 ],
                 steps: [
-                      "Panaskan minyak goreng, tumis bawang putih dan bawang merah hingga harum.",
-                      "Masukkan potongan ayam, aduk hingga ayam berubah warna.",
-                      "Tambahkan cabai merah, kecap manis, saus tiram, garam, dan merica. Aduk rata.",
-                       "Tuang air, masak dengan api kecil hingga ayam matang dan bumbu meresap, sekitar 20 menit.",
-                       "Masukkan daun bawang, aduk sebentar lalu angkat.",
-                      "Sajikan ayam kecap hangat dengan nasi putih."
+                    "Panaskan minyak goreng, tumis bawang putih dan bawang merah hingga harum.",
+                    "Masukkan potongan ayam, aduk hingga ayam berubah warna.",
+                    "Tambahkan cabai merah, kecap manis, saus tiram, garam, dan merica. Aduk rata.",
+                    "Tuang air, masak dengan api kecil hingga ayam matang dan bumbu meresap, sekitar 20 menit.",
+                    "Masukkan daun bawang, aduk sebentar lalu angkat.",
+                    "Sajikan ayam kecap hangat dengan nasi putih."
                 ]
-            },
+            }
         ];
 
         // Tampilkan semua resep
         function showRecipes(filtered = recipes) {
             const recipesList = document.getElementById('recipesList');
             if (filtered.length === 0) {
-                recipesList.innerHTML = "<p><i>Resep tidak ditemukan.</i></p>";
+                recipesList.innerHTML = `
+                    <div class="col-span-full text-center py-10">
+                        <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600">Resep tidak ditemukan. Coba kata kunci lain.</p>
+                    </div>`;
                 return;
             }
+            
             recipesList.innerHTML = '';
             filtered.forEach((recipe, i) => {
                 const card = document.createElement('div');
-                card.className = 'recipe-card';
+                card.className = 'recipe-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer';
                 card.onclick = () => showRecipeDetail(i, filtered);
                 card.innerHTML = `
-                    <img src="${recipe.image}" alt="${recipe.title}">
-                    <div class="recipe-title">${recipe.title}</div>
+                    <img src="${recipe.image}" alt="${recipe.title}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">${recipe.title}</h3>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-utensils mr-1"></i>
+                            <span>${recipe.ingredients.length} bahan</span>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-list-ol mr-1"></i>
+                            <span>${recipe.steps.length} langkah</span>
+                        </div>
+                    </div>
                 `;
                 recipesList.appendChild(card);
             });
@@ -611,14 +493,14 @@
             );
             showRecipes(filtered);
             // Jika pencarian dilakukan, tampilkan tombol kembali ke halaman utama
-            document.getElementById('backMainBtn').style.display = 'inline-block';
+            document.getElementById('backMainBtn').classList.remove('hidden');
         }
 
         // Tombol kembali ke halaman utama
         function backToMain() {
             document.getElementById('searchInput').value = '';
             showRecipes(recipes);
-            document.getElementById('backMainBtn').style.display = 'none';
+            document.getElementById('backMainBtn').classList.add('hidden');
         }
 
         // Recipe detail modal
@@ -626,29 +508,52 @@
             const r = filteredList[index];
             const detail = document.getElementById('recipeDetail');
             detail.innerHTML = `
-                <span class="close" onclick="hideRecipeModal()">&times;</span>
-                <img src="${r.image}" alt="${r.title}">
-                <h3>${r.title}</h3>
-                <strong>Bahan-bahan:</strong>
-                <ul>${r.ingredients.map(i => "<li>"+i+"</li>").join('')}</ul>
-                <strong>Cara Membuat:</strong>
-                <ol>${r.steps.map(s => "<li>"+s+"</li>").join('')}</ol>
-                <button class="back-btn" onclick="hideRecipeModal()">Kembali</button>
+                <div class="p-6">
+                    <img src="${r.image}" alt="${r.title}" class="w-full h-64 object-cover rounded-lg mb-4">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">${r.title}</h3>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-2 flex items-center">
+                            <i class="fas fa-clipboard-list text-red-500 mr-2"></i> Bahan-bahan:
+                        </h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            ${r.ingredients.map(i => `<li>${i}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-2 flex items-center">
+                            <i class="fas fa-list-ol text-red-500 mr-2"></i> Cara Membuat:
+                        </h4>
+                        <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+                            ${r.steps.map(s => `<li class="mb-2">${s}</li>`).join('')}
+                        </ol>
+                    </div>
+                    
+                    <button onclick="hideRecipeModal()" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Kembali
+                    </button>
+                </div>
             `;
-            document.getElementById('recipeModal').style.display = 'flex';
+            document.getElementById('recipeModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
         }
+        
         function hideRecipeModal() {
-            document.getElementById('recipeModal').style.display = 'none';
+            document.getElementById('recipeModal').classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
         }
 
         // Login Modal
         function showLoginModal() {
-    document.getElementById('loginModal').style.display = 'flex'; // ✅ Flex, bukan block
-}
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+        }
 
-function hideLoginModal() {
-    document.getElementById('loginModal').style.display = 'none';
-}
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
 
         function loginUser(event) {
             event.preventDefault();
@@ -659,13 +564,15 @@ function hideLoginModal() {
             hideLoginModal();
             updateUserInfo();
         }
+        
         function updateUserInfo() {
             const name = localStorage.getItem('userName');
             if (name) {
-                document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('userInfo').textContent = `Selamat datang, ${name}!`;
+                const userInfo = document.getElementById('userInfo');
+                userInfo.classList.remove('hidden');
+                userInfo.querySelector('p').textContent = `Selamat datang, ${name}!`;
             } else {
-                document.getElementById('userInfo').style.display = 'none';
+                document.getElementById('userInfo').classList.add('hidden');
             }
         }
 
@@ -675,13 +582,18 @@ function hideLoginModal() {
             if (event.target == document.getElementById('recipeModal')) hideRecipeModal();
         }
 
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideLoginModal();
+                hideRecipeModal();
+            }
+        });
+
         // Inisialisasi halaman
         document.addEventListener('DOMContentLoaded', function() {
             updateUserInfo();
             showRecipes();
-             // Tambahan proteksi agar modal tidak muncul otomatis saat reload
-            hideRecipeModal();
-            hideLoginModal();
         });
     </script>
 </body>
